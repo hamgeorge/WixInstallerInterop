@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?define UpgradeCode="{a28aa9d0-29c6-40d7-8f80-7507ded82e4b}"?>
+<?define Version="1.0.3"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="UpgradeDemo" Language="1033" Version="1.0.0.2" Manufacturer="GH" UpgradeCode="a28aa9d0-29c6-40d7-8f80-7507ded82e4b">
+	<Product Id="*" Name="UpgradeDemo" Language="1033" Version="$(var.Version)" Manufacturer="GH" UpgradeCode="$(var.UpgradeCode)">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
-		<MajorUpgrade
-			Schedule="afterInstallInitialize"
-			DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<Upgrade Id ="$(var.UpgradeCode)">
+			<UpgradeVersion Minimum="$(var.Version)" OnlyDetect="yes" Property="NEWERVERSIONDETECTED"/>
+			<UpgradeVersion Maximum="$(var.Version)" IncludeMaximum="no" Property="OLDERVERSIONBEINGUPGRADED"/>
+		</Upgrade>
+		<InstallExecuteSequence>
+			<RemoveExistingProducts After="InstallValidate"/>
+		</InstallExecuteSequence>
+		<Condition Message="A newer version of [ProductName] is already installed. If you are sure you want to downgrade, remove the existing installation via Programs and Features.">Not NEWERVERSIONDETECTED</Condition>
 		<MediaTemplate EmbedCab="yes"/>
-
 		<Feature Id="ProductFeature" Title="UpgradeDemo" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
 		</Feature>
 		<UI>
-			<Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"/>
+			<Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER"/>
 			<UIRef Id="WixUI_InstallDir"/>
 		</UI>
 	</Product>
@@ -30,7 +36,7 @@
 		<ComponentGroup Id="ProductComponents">
 			<Component Id='Main' Guid='39062743-C3A3-4087-8739-F9A311CC00D5' Directory="INSTALLFOLDER">
 				<File Source = '$(var.SourceDir)GHDemo.exe' Id = 'exe.GHDemo.exe' />
-			</Component>			
+			</Component>
 		</ComponentGroup>
 	</Fragment>
 </Wix>
