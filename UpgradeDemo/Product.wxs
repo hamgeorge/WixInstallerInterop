@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="*" Name="UpgradeDemo" Language="1033" Version="1.0.0.0" Manufacturer="" UpgradeCode="a28aa9d0-29c6-40d7-8f80-7507ded82e4b">
+	<Product Id="*" Name="UpgradeDemo" Language="1033" Version="1.0.0.2" Manufacturer="GH" UpgradeCode="a28aa9d0-29c6-40d7-8f80-7507ded82e4b">
 		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
-		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
-		<MediaTemplate />
+		<MajorUpgrade
+			Schedule="afterInstallInitialize"
+			DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes"/>
 
 		<Feature Id="ProductFeature" Title="UpgradeDemo" Level="1">
 			<ComponentGroupRef Id="ProductComponents" />
 		</Feature>
+		<UI>
+			<Property Id="WIXUI_INSTALLDIR" Value="INSTALLDIR"/>
+			<UIRef Id="WixUI_InstallDir"/>
+		</UI>
 	</Product>
 
 	<Fragment>
@@ -17,14 +23,14 @@
 				<Directory Id="INSTALLFOLDER" Name="UpgradeDemo" />
 			</Directory>
 		</Directory>
+
 	</Fragment>
 
 	<Fragment>
-		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-			<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-			<!-- <Component Id="ProductComponent"> -->
-				<!-- TODO: Insert files, registry keys, and other resources here. -->
-			<!-- </Component> -->
+		<ComponentGroup Id="ProductComponents">
+			<Component Id='Main' Guid='39062743-C3A3-4087-8739-F9A311CC00D5' Directory="INSTALLFOLDER">
+				<File Source = '$(var.SourceDir)GHDemo.exe' Id = 'exe.GHDemo.exe' />
+			</Component>			
 		</ComponentGroup>
 	</Fragment>
 </Wix>
